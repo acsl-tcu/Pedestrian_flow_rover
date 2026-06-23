@@ -1,0 +1,31 @@
+実験開始までのコマンド(ターミナルをその都度開く)
+
+
+-RICOH THETAの起動-
+接続したらModeボタンを押してLiveモードにする
+$ sudo modprobe v4l2loopback # 仮想デバイスの設定
+$ v4l2-ctl --list-devices # 仮想デバイスのリスト
+$ sudo modprobe -r v4l2loopback # 仮想デバイスの削除
+$ cd ~/libuvc-theta/build # ディレクトリ移動
+$ ~/libuvc-theta-sample/gst/gst_loopback --format 2K # Live streamingの実行
+$ ros2 launch ms_launch ricoh-theta_live-streaming_launch.py # このコマンドを打てば一発でLive streamingを実行できる
+
+
+-YOLOの実行-
+$ ros2 run ms_yolo ms_yolo
+
+
+-RPLiDAR S1の起動-
+ttyUSB0とlaunchファイルに指定されているため，使用時はjetsonに最初に接続するか，ファイル内の値をttyUSB1等に変える
+$ ros2 launch rplidar_ros rplidar_s1_launch.py
+
+
+-メガローバーのROS2起動コマンド-
+$ ls /dev/ttyUSB* # 接続されているUSBの一覧
+$ sudo chmod 666 /dev/ttyUSB1 # USBへ権限を与える
+$ ros2 run micro_ros_agent micro_ros_agent serial --baudrate 115200 --dev /dev/ttyUSB1 # 起動コマンド
+$ ros2 launch ms_launch micro-ros_megarover_launch.py # このコマンドを打てば一発でmicro-ROSを起動できる
+
+
+-robotの実行-
+$ ros2 run ms_robot ms_robot

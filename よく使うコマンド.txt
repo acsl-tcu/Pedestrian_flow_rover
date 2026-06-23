@@ -1,0 +1,45 @@
+よく使うコマンド集
+
+
+-指定したidアドレスの存在を確認するコマンド-
+$ ip (ipアドレス)，ip ubuntu (ホスト名)
+
+
+-wslでsshするコマンド，-Xを入れることで映像の転送が可能-
+$ ssh -X student@(ipアドレス)
+
+
+-ROS2環境のビルド，プログラムを変更したときのコマンド-
+$ colcon build
+$ source install/setup.bash
+
+
+-ROS2でドメインIDを定義するコマンド，~/.bashrcの最後に追加すればターミナル起動時に実行されるため普段は不要-
+$ export ROS_DOMAIN_ID=25 # 研究室内で被らないようによく確認すること
+
+
+-WiFi関係，Jetson限定-
+$ sudo nmcli d wifi list # 飛んでるWiFiのリスト
+$ nmcli c # 現在&過去接続したWiFiのリスト
+$ sudo nmcli c up (WiFi名) # WiFi変更
+$ sudo nmcli device wifi connect '(WiFi名)' password '(パスワード)' ifname wlan0 # 新規接続
+
+
+-GitHub関係-
+Pushのコマンド，ローカルの変更をネットワーク上に反映
+$ cd ~/MovingSignage # 対象の階層へ移動
+$ git add . # 変更点の追加
+$ git commit -m 'コメント' # ローカルで変更が反映される，-mオプションでコメントが入れられる(推奨)
+$ git push origin (自分のブランチ名) # ネットワーク上にコミットしたものが反映される
+
+
+-pullのコマンド-
+最新をローカルに反映
+$ cd ~/MovingSignage # 対象の階層へ移動
+$ git pull origin (自分のブランチ名) # ネットワーク上の変更をローカルに反映させる
+
+
+-現在の状態確認-
+$ cd ~/MovingSignage # 対象の階層へ移動
+$ git status #状態を確認する
+

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>ms_yolo</name>
+  <version>0.0.1</version>
+  <description>YOLO publisher node using custom message</description>
+  <maintainer email="student@todo.todo">student</maintainer>
+  <license>Apache License 2.0</license>
+
+  <!-- Build tool -->
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- Dependencies -->
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>yolo_custom_msg</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

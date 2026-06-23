@@ -1,0 +1,189 @@
+環境構築のコマンド
+バージョン等の影響により不正確な場合もあるため要注意
+
+
+-Jetsonへのjetpack6.2.1の導入-
+参考サイト：[https://www.souichi.club/deep-learning/jetson-agx-orin/]の[3.Jetpackの入れ直し]以降
+全てにチェックを入れる（DeepStreamなど）
+
+
+-YOLOを使用するための環境のインストール（Pytorchなどの導入を先にやると上書きされてしまうので注意）-
+参考サイト:[https://docs.ultralytics.com/ja/quickstart/#use-ultralytics-with-cli]
+$ pip install ultralytics
+
+
+-PyTorch, Torchvision, Numpyの導入-
+参考サイト：[https://pypi.jetson-ai-lab.io/jp6/cu126]
+参考サイトからtorch-2.8.0-cp310-cp310-linux_aarch64.whlとtorchvision-0.23.0-cp310-cp310-linux_aarch64.whlをダウンロード
+$ pip uninstall torch torchvision
+$ cd Downloads
+$ pip install torch-2.8.0-cp310-cp310-linux_aarch64.whl
+$ pip install torchvision-0.23.0-cp310-cp310-linux_aarch64.whl
+$ cd
+$ sudo apt-get install python3-pip libopenblas-base libopenmpi-dev libomp-dev
+$ pip3 install Cython
+$ pip install numpy==1.24.4
+
+
+-RICOH THETAを使うための環境構築-
+かなり苦戦したので以下のコマンドだけではうまくいかないかも，参考までに
+現状の問題点：/libuvc-theta/buildに移動してから~/libuvc-theta-sample/gst/gst_loopbackを打たないとTHETAが認識されないこと，環境構築をやり直せばうまくいくかも，現状このやり方でできなくなったことはないので保留中
+参考サイト2つ：[https://qiita.com/onushi-k/items/8440ba1add465ba9c38b], [https://codetricity.github.io/theta-linux/]
+
+openCVの構築
+参考サイト：[https://qiita.com/TooMe/items/a4cc9cf4398ee8a5929f]
+$ wget https://github.com/lanzani/jetson-libraries/raw/main/libraries/opencv/l4t32.7.1/py3.6.9/ocv4.8.0/OpenCV-4.8.0-aarch64.sh
+$ chmod +x OpenCV-4.8.0-aarch64.sh
+$ sudo ./OpenCV-4.8.0-aarch64.sh --prefix=/usr/local --skip-license --exclude-subdir
+$ sudo apt-get -y install libtesseract4 libatlas3-base python3-numpy
+$ sudo apt-get clean
+$ sudo apt install -y build-essential cmake libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev libusb-1.0-0-dev libjpeg-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev v4l2loopback-dkms
+
+libuvcの構築
+$ git clone https://github.com/libuvc/libuvc
+$ cd libuvc
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make && sudo make install
+$ cd
+
+libuvc-thetaの構築
+$ git clone https://github.com/ricohapi/libuvc-theta
+$ cd libuvc-theta
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+$ sudo make install
+$ sudo ldconfig
+$ cd
+
+libuvc-theta-sampleの構築
+$ git clone https://github.com/codetricity/libuvc-theta-sample
+$ cd ~/libuvc-theta-sample/gst
+ここで，/libuvc-theta-sample/gstにあるgst_viewerを開き，190行目の/dev/video1を/dev/video0に変更する
+$ make clean
+$ make
+$ cd
+
+v4l2loopbackの構築
+$ git clone https://github.com/umlaeute/v4l2loopback.git
+$ cd v4l2loopback
+$ make 
+$ sudo make install
+$ sudo depmod -a
+$ sudo apt install v4l-utils
+$ cd
+
+RICOH THETAの起動
+RICOH THETAを接続したらModeボタンを押してLiveモードにする
+$ sudo modprobe v4l2loopback # 仮想デバイスの設定
+$ v4l2-ctl --list-devices # 仮想デバイスのリスト
+$ sudo modprobe -r v4l2loopback # 仮想デバイスの削除
+$ cd ~/libuvc-theta/build # ディレクトリ移動
+$ ~/libuvc-theta-sample/gst/gst_loopback --format 2K # Live streamingの実行
+$ ros2 launch ms_launch ricoh-theta_live-streamnig_launch.py # このコマンドを打てば一発でLive streamingを実行できる
+
+-ROS2 humbleのインストール-
+Ubuntu 22.04 LTS 64bitに対応
+参考サイト：[https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html]
+$ sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y
+$ cd ~ && locale && sudo apt update && sudo apt install locales && sudo locale-gen en_US en_US.UTF-8 && sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 && export LANG=en_US.UTF-8 && locale && sudo apt install software-properties-common -y && sudo add-apt-repository universe -y && sudo apt update && sudo apt install curl -y && sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null && sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && sudo apt install ros-humble-desktop -y && sudo apt install ros-dev-tools -y && source /opt/ros/humble/setup.bash && echo "export ROS_DOMAIN_ID=25" >> ~/.bashrc && echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+
+
+-Pythonを用いたROS2，カスタムメッセージを使用-
+参考サイト：[https://qiita.com/myasu/items/3a026697f535183e12e8]
+$ cd ~/MovingSignage/ros2_packages/ms_yolo/ms_yolo/yolo # ここに作成
+~/MovingSignage/ros2_packages/ms_yolo/yolo_custom_msg/msg/StateYolo.msg：カスタムメッセージの定義
+~/MovingSignage/ros2_packages/ms_yolo/ms_yolo/yolo/yolo_pub.py：YOLO11を用いた歩行者の角度推定および推定角度のPublishをするプログラム
+
+使用コマンド
+$ ros2 run ms_yolo ms_yolo
+
+※処理にものすごい時間がかかったらGPUが使用できていないので，一度PytorchとTorchvisionをアンインストールして，インストールし直す
+
+
+-RPLiDAR S1の環境構築-
+$ mkdir -p ~/lidar_ws/src
+$ cd ~/lidar_ws/src
+$ git clone -b ros2 https://github.com/Slamtec/rplidar_ros.git
+$ cd ~/lidar_ws/
+$ source /opt/ros/humble/setup.bash
+$ colcon build --symlink-install
+$ source ./install/setup.bash
+$ echo "source ~/lidar_ws/install/setup.bash" >> ~/.bashrc
+$ source ~/.bashrc
+$ source ~/lidar_ws/src/rplidar_ros/scripts/create_udev_rules.sh && cd
+
+使用コマンド，ttyUSB0とlaunchファイルに指定されているため，使用時はjetsonに最初に接続するか，ファイル内の値をttyUSB1等に変えること
+$ ros2 launch rplidar_ros rplidar_s1_launch.py
+
+
+-メガローバーとmicro-ROSの環境構築-
+NASの[\Ws2023\ws2023\Lab2023\Papers\卒業論文\2012021_緒方翔一\その他の保存データ\megarover_v30_5_0]を参照
+メガローバーの説明書からダウンロードしたもの
+
+micro-ROSの構築
+$ sudo rosdep init
+$ mkdir -p ~/uros_ws/src && cd ~/uros_ws/src && git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git && cd ~/uros_ws && rosdep update && rosdep install --from-paths src --ignore-src -y && colcon build --symlink-install --cmake-clean-cache && source install/local_setup.bash && ros2 run micro_ros_setup create_agent_ws.sh && ros2 run micro_ros_setup build_agent.sh && echo "source ~/uros_ws/install/local_setup.bash" >> ~/.bashrc && cd
+
+メガローバーのROS2環境構築
+$ mkdir -p ~/rover_ws/src && cd ~/rover_ws/src
+$ git clone https://github.com/vstoneofficial/megarover3_ros2.git --recurse-submodules
+$ git clone -b $ROS_DISTRO https://github.com/vstoneofficial/vs_rover_options_description.git
+$ sudo apt-get install python3-rosdep -y && sudo rosdep init && rosdep update && rosdep install -r --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y
+$ cd ~/rover_ws && colcon build --symlink-install --cmake-clean-cache
+$ echo "source ~/rover_ws/install/local_setup.bash" >> ~/.bashrc && cd
+
+起動コマンド
+$ ls /dev/ttyUSB* # 接続されているUSBの一覧
+$ sudo chmod 666 /dev/ttyUSB1 # USB1へ権限を与える
+$ ros2 run micro_ros_agent micro_ros_agent serial --baudrate 115200 --dev /dev/ttyUSB1 # 起動コマンド
+$ ros2 launch ms_launch micro-ros_megarover_launch.py # このコマンドを打てば一発でmicro-ROSを起動できる
+
+
+-MovingSignageの環境構築-
+$ git clone https://github.com/kasekiguchi/MovingSignage
+$ cd MovingSignage
+$ git checkout 自分のブランチ名
+$ git branch # 自分のブランチになっているかを確認する
+
+起動コマンド
+$ ros2 run ms_robot ms_robot
+
+-Realsense SDKの構築-
+T265はv2.53.1までしか対応していないため，git cloneのところでバージョン指定，Jetsonには未構築
+参考サイト：[https://github.com/IntelRealSense/realsense-ros/?tab=readme-ov-file#installation]
+$ cd ~ && sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get dist-upgrade -y && sudo apt-get install git -y && git clone https://github.com/IntelRealSense/librealsense.git -b v2.53.1 && cd librealsense && sudo apt-get install libssl-dev libusb-1.0-0-dev libudev-dev pkg-config libgtk-3-dev cmake -y && sudo apt-get install libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev at -y && sudo ./scripts/setup_udev_rules.sh -y && sudo ./scripts/patch-realsense-ubuntu-lts-hwe.sh && echo 'hid_sensor_custom' | sudo tee -a /etc/modules && mkdir build && cd build && cmake ../ -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=true -DFORCE_RSUSB_BACKEND=true -DBUILD_PYTHON_BINDINGS:bool=true -DBUILD_GRAPHICAL_EXAMPLES=true && sudo make uninstall && make clean && make -j12 && sudo make install
+
+
+-Realsense ROS2 wrapperの構築-
+T265は4.51.1までしか対応していない，Jetsonには未構築
+$ cd ~ && mkdir -p ~/ros2_ws/src && cd ~/ros2_ws/src/ && git clone https://github.com/IntelRealSense/realsense-ros.git -b 4.51.1 && cd ~/ros2_ws && sudo apt-get install python3-rosdep -y && sudo rosdep init && rosdep update && rosdep install -i --from-path src --rosdistro $ROS_DISTRO --skip-keys=librealsense2 -y && colcon build --symlink-install --cmake-clean-cache && source /opt/ros/humble/setup.bash && cd ~/ros2_ws && . install/local_setup.bash && echo "source ~/ros2_ws/install/local_setup.bash" >> ~/.bashrc && cd
+
+使用コマンド，bootエラーが出たらUSBを接続しなおす
+$ ros2 launch realsense2_camera rs_launch.py
+
+-サーボモータの環境構築-
+Jetsonには未構築
+参考サイト：[https://www.bing.com/videos/riverview/relatedvideo?&q=DynamixelSDK&&mid=4016235F5752CFFBC10A4016235F5752CFFBC10A&&FORM=VRDGAR]
+$ mkdir -p ~/robotis_ws/src && cd ~/robotis_ws/src
+$ git clone -b humble-devel https://github.com/ROBOTIS-GIT/DynamixelSDK
+$ cd ~/robotis_ws && colcon build --symlink-install --cmake-clean-cache
+$ source /opt/ros/humble/setup.bash && cd ~/robotis_ws && . install/local_setup.bash && echo "source ~/robotis_ws/install/$ local_setup.bash" >> ~/.bashrc && cd
+
+起動コマンド
+$ ros2 run dynamixel_sdk_examples read_write_node # ROS2 Subscribeのノード起動
+$ ros2 topic pub -1 /set_position dynamixel_sdk_custom_interfaces/SetPosition "{id: 1, position: 0}" # 角度指令値をPublish
+
+
+-.bashrcの最後に追加(例)-
+export ROS_DOMAIN_ID=25
+source /opt/ros/humble/setup.bash
+source ~/uros_ws/install/local_setup.bash
+source ~/rover_ws/install/local_setup.bash
+source ~/robotis_ws/install/local_setup.bash
+source ~/MovingSignage/install/setup.bash
+
+※ros2 run ms_robot ms_robotをする前に"sudo apt install ffmpeg"をしないと動画が保存されない
