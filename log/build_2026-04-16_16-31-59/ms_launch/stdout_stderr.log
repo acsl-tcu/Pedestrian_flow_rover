@@ -1,0 +1,26 @@
+running egg_info
+creating ../build/ms_launch/ms_launch.egg-info
+writing ../build/ms_launch/ms_launch.egg-info/PKG-INFO
+writing dependency_links to ../build/ms_launch/ms_launch.egg-info/dependency_links.txt
+writing requirements to ../build/ms_launch/ms_launch.egg-info/requires.txt
+writing top-level names to ../build/ms_launch/ms_launch.egg-info/top_level.txt
+writing manifest file '../build/ms_launch/ms_launch.egg-info/SOURCES.txt'
+reading manifest file '../build/ms_launch/ms_launch.egg-info/SOURCES.txt'
+writing manifest file '../build/ms_launch/ms_launch.egg-info/SOURCES.txt'
+running build
+running install
+running install_data
+creating /home/student/MovingSignage/ros2_packages/install/ms_launch/share/ament_index
+creating /home/student/MovingSignage/ros2_packages/install/ms_launch/share/ament_index/resource_index
+creating /home/student/MovingSignage/ros2_packages/install/ms_launch/share/ament_index/resource_index/packages
+copying resource/ms_launch -> /home/student/MovingSignage/ros2_packages/install/ms_launch/share/ament_index/resource_index/packages
+copying package.xml -> /home/student/MovingSignage/ros2_packages/install/ms_launch/share/ms_launch
+creating /home/student/MovingSignage/ros2_packages/install/ms_launch/share/ms_launch/launch
+copying launch/micro-ros_megarover_launch.py -> /home/student/MovingSignage/ros2_packages/install/ms_launch/share/ms_launch/launch
+copying launch/robot1_all.launch.py -> /home/student/MovingSignage/ros2_packages/install/ms_launch/share/ms_launch/launch
+copying launch/__init__.py -> /home/student/MovingSignage/ros2_packages/install/ms_launch/share/ms_launch/launch
+copying launch/ricoh-theta_live-streaming_launch.py -> /home/student/MovingSignage/ros2_packages/install/ms_launch/share/ms_launch/launch
+running install_egg_info
+Copying ../build/ms_launch/ms_launch.egg-info to /home/student/MovingSignage/ros2_packages/install/ms_launch/lib/python3.10/site-packages/ms_launch-0.0.0-py3.10.egg-info
+running install_scripts
+writing list of installed files to '/home/student/MovingSignage/ros2_packages/build/ms_launch/install.log'
