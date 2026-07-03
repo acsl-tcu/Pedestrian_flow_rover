@@ -20,15 +20,18 @@ class YOLO_PUB(Node):
         super().__init__('yolo_pub_node')
         self.pub_ = self.create_publisher(StateYolo, 'yolo_pose', 10)
 
+    # 引数に frame_stamp を追加
     def pub(self, num, name, cls, ids_list,
             deg_all, degp_all, degm_all,
             kp_all, selected_kp,
             selected_deg, selected_degp, selected_degm,
-            selected_id):
+            selected_id, frame_stamp):
         """StateYoloメッセージを作成してPublish"""
         msg = StateYolo()
         msg.header = Header()
-        msg.header.stamp = self.get_clock().now().to_msg()
+        
+        # ❌ self.get_clock().now() ではなく、画像が届いた時点のタイムスタンプを刻む
+        msg.header.stamp = frame_stamp
         msg.header.frame_id = "camera"
 
         msg.num = num
@@ -67,16 +70,7 @@ def yolo(publisher):
     conf = 0.6 # 信頼度の閾値
     max_det = 10 # 最大検出数
 
-    # 以下の詳細やその他プロパティは公式サイト参照：[https://docs.ultralytics.com/ja/modes/predict/#image-and-video-formats]
-    # source：推定を実行するファイル，0なら接続しているカメラのリアルタイムフレームになる
-    # stream：すべてのフレームをメモリにロードする代わりに結果のジェネレーターを作成，ビデオやライブストリームを処理するのに有益
-    # half：半精度(FP16)推論が可能になりサポートされているGPUでのモデル推論を精度への影響を最小限に抑えながら高速化することができる
-    # results = model(source=0, conf=conf, stream=True, max_det=max_det, half=True)
-
-    # trackモードで推論：追跡IDがつけられる，歩行者の判別が今後必要になったらこっちの方が有用かも
-    # persist：現在の画像またはフレームがシーケンスの次であり現在の画像に前の画像からのトラックを期待することをトラッカーに伝える
-    # 参考サイト：[https://docs.ultralytics.com/ja/modes/track/#why-choose-ultralytics-yolo-for-object-tracking]
-    tracker = 'botsort.yaml' # 'botsort.yaml' or 'bytetrack.yaml'のどちらか，botsortが新しい方
+    tracker = 'botsort.yaml'
     results = model.track(source=0, conf=conf, stream=True, max_det=max_det, half=True, persist=True, tracker=tracker)
     
     restrict_view = False
@@ -85,6 +79,9 @@ def yolo(publisher):
 
     while True:
         for r in results:
+            # 🌟【重要】新しいフレーム（映像）の処理が始まった「この瞬間」のROS2時刻を保存
+            frame_stamp = publisher.get_clock().now().to_msg()
+
             # 時間計測
             time_end = time.time()
             dt = time_end - time_sta
@@ -102,8 +99,6 @@ def yolo(publisher):
                 display = cv2.resize(cropped, (w, h))
             else:
                 display = plot
-
-            # cv2.imshow("YOLO View", display) # カメラ映像を見るならコメントイン
 
             key = cv2.waitKey(1) & 0xFF
             if key == ord('s'):
@@ -123,7 +118,7 @@ def yolo(publisher):
             # 検出数
             num = len(r)
             if num <= 0:
-                publisher.pub(0, [""], [0.0], [0.0], [], [], [], [], [], 0.0, 0.0, 0.0, selected_id)
+                publisher.pub(0, [""], [0.0], [0.0], [], [], [], [], [], 0.0, 0.0, 0.0, selected_id, frame_stamp)
                 continue
 
             # IDs
@@ -178,12 +173,12 @@ def yolo(publisher):
                 degm_selected = 0.0
                 degp_selected = 0.0
 
-            # Publish
+            # Publish（最後に frame_stamp を渡す）
             publisher.pub(num, ["" for _ in range(num)], [0.0 for _ in range(num)],
                           ids_list, deg_all, degp_all, degm_all,
                           kp_all_flat, kp_selected,
                           deg_selected, degp_selected, degm_selected,
-                          selected_id)
+                          selected_id, frame_stamp)
 
 
 def input_thread_func():

@@ -5,6 +5,8 @@ from rclpy.node import Node
 import numpy as np
 import math
 import time
+import os
+import csv
 from ms_yolo_msg.msg import StateYolo
 from std_msgs.msg import Float32MultiArray
 
@@ -37,9 +39,9 @@ class KF:
 
         sigma_a2 = 1.0  # (m/s^2)^2
         Q = np.array([
-            [dt**4/4, 0,        dt**3/2, 0       ],
+            [dt**4/4, 0,        dt**3/2, 0        ],
             [0,       dt**4/4,  0,       dt**3/2 ],
-            [dt**3/2, 0,        dt**2,    0       ],
+            [dt**3/2, 0,        dt**2,    0        ],
             [0,       dt**3/2,  0,        dt**2   ]
         ]) * sigma_a2
 
@@ -105,6 +107,26 @@ class RICOH(Node):
         self.GATE_THRESHOLD = 0.6
         self.prev_time = time.time()
 
+        # 実験ログCSVファイルの保存先設定 (~/experiment_log.csv)
+        self.log_file_path = os.path.expanduser('~/experiment_log.csv')
+        self.init_csv_file()
+
+    def init_csv_file(self):
+        """CSVファイルの初期化（ヘッダーの書き込み）"""
+        # ファイルが存在しない場合のみ新規作成してヘッダーを書き込む
+        if not os.path.exists(self.log_file_path):
+            with open(self.log_file_path, mode='w', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow([
+                    'timestamp', 
+                    'yolo_processing_time', 
+                    'person_id', 
+                    'yolo_angle_deg', 
+                    'lidar_mean_x_rover', 
+                    'lidar_mean_y_rover', 
+                    'lidar_angle_deg_rover'
+                ])
+
     def do(self, delay=0.25):
         if self.yolo_sub is None or self.lidar_sub is None or self.rover is None:
             return
@@ -119,6 +141,14 @@ class RICOH(Node):
         now = time.time()
         dt = max(1e-6, now - self.prev_time)
 
+        # 🌟【重要】YOLO側で画像が届いた時点の正確なタイムスタンプ（秒）を取得
+        if hasattr(yolo, 'header') and yolo.header.stamp:
+            yolo_frame_time = yolo.header.stamp.sec + yolo.header.stamp.nanosec * 1e-9
+            # 現在時刻との差分＝画像がYOLOに届いてからRICOHノードで処理されるまでの本当の遅延時間
+            yolo_processing_time = now - yolo_frame_time
+        else:
+            yolo_processing_time = 0.0
+
         # -------- 測定生成 --------
         degm_all = np.array(getattr(yolo, 'degm_all', []))
         degp_all = np.array(getattr(yolo, 'degp_all', []))
@@ -128,6 +158,10 @@ class RICOH(Node):
         selected_id = getattr(yolo, 'selected_id', -1)
 
         meas_positions = {}
+        
+        # 実験ログをこのフレーム分まとめて保存するための一時リスト
+        log_data_list = []
+
         for i in range(num):
             mask = (lidar.angles > degm_all[i]) & (lidar.angles < degp_all[i])
             tempx, tempy = lidar.x[mask], lidar.y[mask]
@@ -136,12 +170,36 @@ class RICOH(Node):
             if tempx.size == 0:
                 continue
 
+            # LiDAR点群の位置情報（ローバー座標系での平均値x, y）
+            lidar_mean_x = float(np.mean(tempx))
+            lidar_mean_y = float(np.mean(tempy))
+            
+            # ローバーから見た点群の角度（ラジアンから度数法 deg に変換）
+            lidar_angle_rover = math.degrees(math.atan2(lidar_mean_y, lidar_mean_x))
+
+            # この人のデータをログリストに追加
+            log_data_list.append([
+                now,                                # 記録時刻（UNIX時間）
+                yolo_processing_time,               # ★本物の遅延時間（秒）
+                int(ids[i]),                        # 人の追跡ID
+                float(math.degrees(deg_all[i])),    # YOLOが認識している人の角度（度）
+                lidar_mean_x,                       # LiDAR点群平均 X（メートル）
+                lidar_mean_y,                       # LiDAR点群平均 Y（メートル）
+                lidar_angle_rover                   # ローバーから見た点群の角度（度）
+            ])
+
             dis = float(np.min(np.sqrt(tempx**2 + tempy**2)))
             ang = angle_normalize(vehicle_pose[2] + deg_all[i])
             x = dis * math.cos(ang) + vehicle_pose[0]
             y = dis * math.sin(ang) + vehicle_pose[1]
 
             meas_positions[ids[i]] = (x, y, dis)
+
+        # 🌟蓄積した実験データをCSVファイルにリアルタイムで追記保存
+        if log_data_list:
+            with open(self.log_file_path, mode='a', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerows(log_data_list)
 
         # -------- 予測 & timeout --------
         for tid in list(self.trackers.keys()):
@@ -191,10 +249,8 @@ class RICOH(Node):
         self.info['confirmed'] = self.info['pos_all'].copy()
 
         if selected_id != 0 and selected_id in out_ids:
-            # ① 明示的にIDが指定されている場合のみID優先
             idx = out_ids.index(selected_id)
         elif len(dist_all) > 0:
-            # ② selected_id == 0 → 最も近い人
             idx = int(np.argmin(dist_all))
         else:
             idx = -1
