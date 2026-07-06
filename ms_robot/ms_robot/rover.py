@@ -39,7 +39,7 @@ class ROVER(Node):
         self.yaw = 0.0
 
         # QoS設定（Best Effort）
-        qos = QoSProfile(depth=10, reliability=QoSReliabilityPolicy.BEST_EFFORT)
+        qos = QoSProfile(depth=10, reliability=QoSReliabilityPolicy.RELIABLE)
 
         # Publisher（ローバーへの速度コマンド）
         self.publisher = self.create_publisher(Twist, '/rover_twist', qos)

@@ -112,20 +112,20 @@ class RICOH(Node):
         self.init_csv_file()
 
     def init_csv_file(self):
-        """CSVファイルの初期化（ヘッダーの書き込み）"""
-        # ファイルが存在しない場合のみ新規作成してヘッダーを書き込む
-        if not os.path.exists(self.log_file_path):
-            with open(self.log_file_path, mode='w', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow([
-                    'timestamp', 
-                    'yolo_processing_time', 
-                    'person_id', 
-                    'yolo_angle_deg', 
-                    'lidar_mean_x_rover', 
-                    'lidar_mean_y_rover', 
-                    'lidar_angle_deg_rover'
-                ])
+        """CSVファイルの初期化（時間軸検証用のヘッダー）"""
+        with open(self.log_file_path, mode='w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([
+                'ricoh_process_time',      # 1. 位置推定（同期）処理が走った現在時刻
+                'yolo_frame_time',         # 2. YOLOの画像がカメラに届いた本物の時刻
+                'lidar_scan_time',         # 3. LiDARデータがセンサーに届いた本物の時刻
+                'yolo_processing_time',    # 4. YOLOの処理遅延時間
+                'person_id',               # 5. 歩行者ID
+                'yolo_angle_deg',          # 6. 【YOLO角度】(yolo_frame_timeのデータ)
+                'lidar_mean_x_rover',      # 7. 【LiDAR X】(lidar_scan_timeのデータ)
+                'lidar_mean_y_rover',      # 8. 【LiDAR Y】(lidar_scan_timeのデータ)
+                'lidar_angle_deg_rover'    # 9. 【LiDAR角度】(lidar_scan_timeのデータ)
+            ])
 
     def do(self, delay=0.25):
         if self.yolo_sub is None or self.lidar_sub is None or self.rover is None:
@@ -141,13 +141,23 @@ class RICOH(Node):
         now = time.time()
         dt = max(1e-6, now - self.prev_time)
 
-        # 🌟【重要】YOLO側で画像が届いた時点の正確なタイムスタンプ（秒）を取得
+        # 🌟【生の時間軸データ抽出】
+        # ① YOLO画像がカメラに届いた時間
         if hasattr(yolo, 'header') and yolo.header.stamp:
             yolo_frame_time = yolo.header.stamp.sec + yolo.header.stamp.nanosec * 1e-9
-            # 現在時刻との差分＝画像がYOLOに届いてからRICOHノードで処理されるまでの本当の遅延時間
             yolo_processing_time = now - yolo_frame_time
         else:
+            yolo_frame_time = 0.0
             yolo_processing_time = 0.0
+
+        # ② LiDARが点群を取得した実際の時間
+        if hasattr(lidar, 'header') and lidar.header.stamp:
+            lidar_scan_time = lidar.header.stamp.sec + lidar.header.stamp.nanosec * 1e-9
+        else:
+            lidar_scan_time = target_lidar_time
+
+        # RICOHノードの処理実行時刻
+        ricoh_process_time = now
 
         # -------- 測定生成 --------
         degm_all = np.array(getattr(yolo, 'degm_all', []))
@@ -158,8 +168,6 @@ class RICOH(Node):
         selected_id = getattr(yolo, 'selected_id', -1)
 
         meas_positions = {}
-        
-        # 実験ログをこのフレーム分まとめて保存するための一時リスト
         log_data_list = []
 
         for i in range(num):
@@ -170,22 +178,21 @@ class RICOH(Node):
             if tempx.size == 0:
                 continue
 
-            # LiDAR点群の位置情報（ローバー座標系での平均値x, y）
             lidar_mean_x = float(np.mean(tempx))
             lidar_mean_y = float(np.mean(tempy))
-            
-            # ローバーから見た点群の角度（ラジアンから度数法 deg に変換）
             lidar_angle_rover = math.degrees(math.atan2(lidar_mean_y, lidar_mean_x))
 
-            # この人のデータをログリストに追加
+            # 一点一点データと時間を完全に紐づけてリスト化
             log_data_list.append([
-                now,                                # 記録時刻（UNIX時間）
-                yolo_processing_time,               # ★本物の遅延時間（秒）
-                int(ids[i]),                        # 人の追跡ID
-                float(math.degrees(deg_all[i])),    # YOLOが認識している人の角度（度）
-                lidar_mean_x,                       # LiDAR点群平均 X（メートル）
-                lidar_mean_y,                       # LiDAR点群平均 Y（メートル）
-                lidar_angle_rover                   # ローバーから見た点群の角度（度）
+                ricoh_process_time,
+                yolo_frame_time,
+                lidar_scan_time,
+                yolo_processing_time,
+                int(ids[i]),                        
+                float(math.degrees(deg_all[i])),    
+                lidar_mean_x,                       
+                lidar_mean_y,                       
+                lidar_angle_rover                   
             ])
 
             dis = float(np.min(np.sqrt(tempx**2 + tempy**2)))
@@ -195,7 +202,7 @@ class RICOH(Node):
 
             meas_positions[ids[i]] = (x, y, dis)
 
-        # 🌟蓄積した実験データをCSVファイルにリアルタイムで追記保存
+        # 実験ログCSVファイルに追記
         if log_data_list:
             with open(self.log_file_path, mode='a', newline='') as f:
                 writer = csv.writer(f)
@@ -226,7 +233,6 @@ class RICOH(Node):
 
         # -------- 出力 --------
         out_ids = [i for i in ids if i in self.trackers]
-
         pos_all, vel_all, yaw_all, dist_all = [], [], [], []
 
         for tid in out_ids:
@@ -238,9 +244,7 @@ class RICOH(Node):
             pos_all.append([px, py])
             vel_all.append([vx, vy])
             yaw_all.append(yaw)
-            dist_all.append(
-                math.hypot(px - vehicle_pose[0], py - vehicle_pose[1])
-            )
+            dist_all.append(math.hypot(px - vehicle_pose[0], py - vehicle_pose[1]))
 
         self.info['pos_all'] = np.array(pos_all)
         self.info['vel_all'] = np.array(vel_all)
