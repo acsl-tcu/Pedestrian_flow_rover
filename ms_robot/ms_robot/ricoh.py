@@ -150,11 +150,11 @@ class RICOH(Node):
             yolo_frame_time = 0.0
             yolo_processing_time = 0.0
 
-        # ② LiDARが点群を取得した実際の時間
+        # ② LiDARが点群を取得した実際の時間 (lidar.headerから直接抽出)
         if hasattr(lidar, 'header') and lidar.header.stamp:
             lidar_scan_time = lidar.header.stamp.sec + lidar.header.stamp.nanosec * 1e-9
         else:
-            lidar_scan_time = target_lidar_time
+            lidar_scan_time = now - delay  # ヘッダーが無い場合の代替値
 
         # RICOHノードの処理実行時刻
         ricoh_process_time = now
@@ -282,18 +282,3 @@ class RICOH(Node):
                 float(deg_all[idx] + self.info['yaw'])
             ]
             self.info_pub.publish(msg)
-
-
-def main(args=None):
-    rclpy.init(args=args)
-    node = RICOH()
-    try:
-        rclpy.spin(node)
-    except KeyboardInterrupt:
-        pass
-    node.destroy_node()
-    rclpy.shutdown()
-
-
-if __name__ == "__main__":
-    main()
