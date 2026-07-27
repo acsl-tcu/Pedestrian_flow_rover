@@ -1,0 +1,59 @@
+running egg_info
+creating ../build/ms_robot/ms_robot.egg-info
+writing ../build/ms_robot/ms_robot.egg-info/PKG-INFO
+writing dependency_links to ../build/ms_robot/ms_robot.egg-info/dependency_links.txt
+writing entry points to ../build/ms_robot/ms_robot.egg-info/entry_points.txt
+writing requirements to ../build/ms_robot/ms_robot.egg-info/requires.txt
+writing top-level names to ../build/ms_robot/ms_robot.egg-info/top_level.txt
+writing manifest file '../build/ms_robot/ms_robot.egg-info/SOURCES.txt'
+reading manifest file '../build/ms_robot/ms_robot.egg-info/SOURCES.txt'
+writing manifest file '../build/ms_robot/ms_robot.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/student/MovingSignage/ros2_packages/build/ms_robot/build
+creating /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib
+creating /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+copying ms_robot/__init__.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+copying ms_robot/cbf.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+copying ms_robot/graph.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+copying ms_robot/ricoh.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+copying ms_robot/robot.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+copying ms_robot/rover.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+copying ms_robot/rplidar_sub.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+copying ms_robot/servo.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+copying ms_robot/tscf.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+copying ms_robot/yolo_sub.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+running install
+running install_lib
+creating /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/cbf.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/ricoh.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/__init__.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/rover.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/robot.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/yolo_sub.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/rplidar_sub.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/servo.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/tscf.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/graph.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/cbf.py to cbf.cpython-310.pyc
+byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/ricoh.py to ricoh.cpython-310.pyc
+byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/__init__.py to __init__.cpython-310.pyc
+byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/rover.py to rover.cpython-310.pyc
+byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/robot.py to robot.cpython-310.pyc
+byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/yolo_sub.py to yolo_sub.cpython-310.pyc
+byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/rplidar_sub.py to rplidar_sub.cpython-310.pyc
+byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/servo.py to servo.cpython-310.pyc
+byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/tscf.py to tscf.cpython-310.pyc
+byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/graph.py to graph.cpython-310.pyc
+running install_data
+creating /home/student/MovingSignage/ros2_packages/install/ms_robot/share/ament_index
+creating /home/student/MovingSignage/ros2_packages/install/ms_robot/share/ament_index/resource_index
+creating /home/student/MovingSignage/ros2_packages/install/ms_robot/share/ament_index/resource_index/packages
+copying resource/ms_robot -> /home/student/MovingSignage/ros2_packages/install/ms_robot/share/ament_index/resource_index/packages
+copying package.xml -> /home/student/MovingSignage/ros2_packages/install/ms_robot/share/ms_robot
+running install_egg_info
+Copying ../build/ms_robot/ms_robot.egg-info to /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot-0.0.0-py3.10.egg-info
+running install_scripts
+Installing ms_robot script to /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/ms_robot
+writing list of installed files to '/home/student/MovingSignage/ros2_packages/build/ms_robot/install.log'

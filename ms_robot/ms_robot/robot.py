@@ -253,7 +253,7 @@ def main():
                 x = rover.x, rover.y, rover.yaw
                 lidar.do()
                 yolo.do()
-                ricoh.do()
+                ricoh.do(delay=0.25)
 
                 # 歩行者位置の取得（RICOH）
                 params['ped_pos_all'] = ricoh.info['pos_all']

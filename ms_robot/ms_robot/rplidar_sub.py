@@ -21,7 +21,10 @@ class RPLIDAR_SUB(Node):
         super().__init__("rplidar_sub_node")
 
         # 元の /scan を購読
-        self.subscription = self.create_subscription(LaserScan, '/scan', self.subscriber_callback, 10)
+        #self.subscription = self.create_subscription(LaserScan, '/scan', self.subscriber_callback, 10)
+        # 合体トピックである '/scan_merged' を購読！
+        self.subscription = self.create_subscription(LaserScan, '/scan_merged', self.subscriber_callback, 10)
+
 
         # フィルタ後の点群を PointCloud2 でパブリッシュ
         self.filtered_pub = self.create_publisher(PointCloud2, '/lidar_points', 10)

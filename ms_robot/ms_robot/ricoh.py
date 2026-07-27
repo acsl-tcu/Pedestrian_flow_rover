@@ -127,13 +127,13 @@ class RICOH(Node):
                 'lidar_angle_deg_rover'    # 9. 【LiDAR角度】(lidar_scan_timeのデータ)
             ])
 
-    def do(self):
+    def do(self, delay=0.25):
         if self.yolo_sub is None or self.lidar_sub is None or self.rover is None:
             return
 
         yolo = self.yolo_sub.yolo_msg
-        lidar = self.lidar_sub.get_past_scan(time.time())
-        vehicle_pose = self.rover.get_past_odom(time.time())
+        lidar = self.lidar_sub.get_past_scan(time.time() - delay)
+        vehicle_pose = self.rover.get_past_odom(time.time() - delay)
 
         if lidar is None or vehicle_pose is None or yolo is None:
             return
@@ -154,7 +154,7 @@ class RICOH(Node):
         if hasattr(lidar, 'header') and lidar.header.stamp:
             lidar_scan_time = lidar.header.stamp.sec + lidar.header.stamp.nanosec * 1e-9
         else:
-            lidar_scan_time = now  # ヘッダーが無い場合の代替値
+            lidar_scan_time = now - delay # ヘッダーが無い場合の代替値
 
         # RICOHノードの処理実行時刻
         ricoh_process_time = now

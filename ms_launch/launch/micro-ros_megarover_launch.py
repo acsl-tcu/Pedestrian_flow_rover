@@ -4,9 +4,9 @@ from launch.event_handlers import OnProcessExit
 
 def generate_launch_description():
 
-    # 1. USB1 の権限変更（sudo）
+    # 1. USB2 の権限変更（sudo）
     chmod_action = ExecuteProcess(
-        cmd=['sudo', 'chmod', '666', '/dev/ttyUSB1'],
+        cmd=['sudo', 'chmod', '666', '/dev/ttyUSB2'],
         output='screen'
     )
 
@@ -14,7 +14,7 @@ def generate_launch_description():
     micro_ros_action = ExecuteProcess(
         cmd=[
             'ros2', 'run', 'micro_ros_agent', 'micro_ros_agent',
-            'serial', '--baudrate', '115200', '--dev', '/dev/ttyUSB1'
+            'serial', '--baudrate', '115200', '--dev', '/dev/ttyUSB2'
         ],
         output='screen'
     )

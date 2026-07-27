@@ -1,0 +1,3 @@
+[console_scripts]
+ms_robot = ms_robot.robot:main
+

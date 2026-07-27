@@ -1,0 +1,61 @@
+[1.337s] Invoking command in '/home/student/MovingSignage/ros2_packages/ms_robot': PYTHONPATH=/home/student/MovingSignage/ros2_packages/build/ms_robot/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/ms_robot build --build-base /home/student/MovingSignage/ros2_packages/build/ms_robot/build install --record /home/student/MovingSignage/ros2_packages/build/ms_robot/install.log --install-scripts $base/lib/ms_robot --single-version-externally-managed install_data
+[1.826s] running egg_info
+[1.827s] creating ../build/ms_robot/ms_robot.egg-info
+[1.827s] writing ../build/ms_robot/ms_robot.egg-info/PKG-INFO
+[1.828s] writing dependency_links to ../build/ms_robot/ms_robot.egg-info/dependency_links.txt
+[1.828s] writing entry points to ../build/ms_robot/ms_robot.egg-info/entry_points.txt
+[1.828s] writing requirements to ../build/ms_robot/ms_robot.egg-info/requires.txt
+[1.828s] writing top-level names to ../build/ms_robot/ms_robot.egg-info/top_level.txt
+[1.829s] writing manifest file '../build/ms_robot/ms_robot.egg-info/SOURCES.txt'
+[1.832s] reading manifest file '../build/ms_robot/ms_robot.egg-info/SOURCES.txt'
+[1.833s] writing manifest file '../build/ms_robot/ms_robot.egg-info/SOURCES.txt'
+[1.833s] running build
+[1.833s] running build_py
+[1.834s] creating /home/student/MovingSignage/ros2_packages/build/ms_robot/build
+[1.834s] creating /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib
+[1.834s] creating /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+[1.834s] copying ms_robot/__init__.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+[1.834s] copying ms_robot/cbf.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+[1.834s] copying ms_robot/graph.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+[1.834s] copying ms_robot/ricoh.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+[1.835s] copying ms_robot/robot.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+[1.835s] copying ms_robot/rover.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+[1.835s] copying ms_robot/rplidar_sub.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+[1.835s] copying ms_robot/servo.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+[1.836s] copying ms_robot/tscf.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+[1.836s] copying ms_robot/yolo_sub.py -> /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot
+[1.837s] running install
+[1.838s] running install_lib
+[1.841s] creating /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+[1.841s] copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/cbf.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+[1.841s] copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/ricoh.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+[1.842s] copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/__init__.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+[1.842s] copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/rover.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+[1.842s] copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/robot.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+[1.842s] copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/yolo_sub.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+[1.843s] copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/rplidar_sub.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+[1.843s] copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/servo.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+[1.843s] copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/tscf.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+[1.843s] copying /home/student/MovingSignage/ros2_packages/build/ms_robot/build/lib/ms_robot/graph.py -> /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot
+[1.844s] byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/cbf.py to cbf.cpython-310.pyc
+[1.845s] byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/ricoh.py to ricoh.cpython-310.pyc
+[1.849s] byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/__init__.py to __init__.cpython-310.pyc
+[1.849s] byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/rover.py to rover.cpython-310.pyc
+[1.850s] byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/robot.py to robot.cpython-310.pyc
+[1.853s] byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/yolo_sub.py to yolo_sub.cpython-310.pyc
+[1.854s] byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/rplidar_sub.py to rplidar_sub.cpython-310.pyc
+[1.856s] byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/servo.py to servo.cpython-310.pyc
+[1.856s] byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/tscf.py to tscf.cpython-310.pyc
+[1.857s] byte-compiling /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot/graph.py to graph.cpython-310.pyc
+[1.860s] running install_data
+[1.860s] creating /home/student/MovingSignage/ros2_packages/install/ms_robot/share/ament_index
+[1.861s] creating /home/student/MovingSignage/ros2_packages/install/ms_robot/share/ament_index/resource_index
+[1.861s] creating /home/student/MovingSignage/ros2_packages/install/ms_robot/share/ament_index/resource_index/packages
+[1.861s] copying resource/ms_robot -> /home/student/MovingSignage/ros2_packages/install/ms_robot/share/ament_index/resource_index/packages
+[1.861s] copying package.xml -> /home/student/MovingSignage/ros2_packages/install/ms_robot/share/ms_robot
+[1.861s] running install_egg_info
+[1.865s] Copying ../build/ms_robot/ms_robot.egg-info to /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages/ms_robot-0.0.0-py3.10.egg-info
+[1.866s] running install_scripts
+[1.902s] Installing ms_robot script to /home/student/MovingSignage/ros2_packages/install/ms_robot/lib/ms_robot
+[1.903s] writing list of installed files to '/home/student/MovingSignage/ros2_packages/build/ms_robot/install.log'
+[1.956s] Invoked command in '/home/student/MovingSignage/ros2_packages/ms_robot' returned '0': PYTHONPATH=/home/student/MovingSignage/ros2_packages/build/ms_robot/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/student/MovingSignage/ros2_packages/install/ms_robot/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/ms_robot build --build-base /home/student/MovingSignage/ros2_packages/build/ms_robot/build install --record /home/student/MovingSignage/ros2_packages/build/ms_robot/install.log --install-scripts $base/lib/ms_robot --single-version-externally-managed install_data
